@@ -63,14 +63,6 @@ public class AnimalView : MonoBehaviour
         }
     }
 
-    private void OnVideoDone(UnityEngine.Video.VideoPlayer vp)
-    {
-        UnityEngine.Debug.Log(activeAnimal.ResourceName + " clip done playing");
-        // Remove the video and start the sound playing
-        this.DismissVideo();
-        this.PlayAudio();
-    }
-
     private void PlayVideo()
     {
         UnityEngine.Debug.Log("Loading " + activeAnimal.ResourceName + " clip");
@@ -83,6 +75,14 @@ public class AnimalView : MonoBehaviour
             videoPlayer.loopPointReached += OnVideoDone;
             videoPlayer.Play();
         }
+    }
+
+    private void OnVideoDone(UnityEngine.Video.VideoPlayer vp)
+    {
+        UnityEngine.Debug.Log(activeAnimal.ResourceName + " clip done playing");
+        // Remove the video and start the sound playing
+        this.DismissVideo();
+        this.PlayAudio();
     }
 
     private void DismissVideo()
@@ -102,7 +102,20 @@ public class AnimalView : MonoBehaviour
             audioPlayer.clip = blipToPlay;
             //videoPlayer.loopPointReached += OnVideoDone;
             audioPlayer.Play();
+            Invoke("OnAudioDone", blipToPlay.length);
         }
+    }
+
+    private void OnAudioDone()
+    {
+        UnityEngine.Debug.Log(activeAnimal.ResourceName + " blip done playing");
+        // Remove the audio icons
+        this.DismissAudio();
+    }
+
+    private void DismissAudio()
+    {
+        duringAudioImage.SetActive(false);
     }
 
 }

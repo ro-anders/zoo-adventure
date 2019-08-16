@@ -11,10 +11,10 @@ public class ZooAdventure : MonoBehaviour
     {
         AnimalConfig[] animals = new AnimalConfig[] {
             new AnimalConfig("Sumatran Tiger", "tiger"),
+            new AnimalConfig("Beaver", "beaver"),
             new AnimalConfig("Sloth Bear", "slothbear"),
             new AnimalConfig("American Bison", "bison"),
             new AnimalConfig("Bald Eagle", ""),
-            new AnimalConfig("Lion", ""),
             new AnimalConfig("Indian Elephant", ""),
             new AnimalConfig("Serval", "")
         };
