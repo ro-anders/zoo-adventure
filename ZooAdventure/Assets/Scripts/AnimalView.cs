@@ -14,6 +14,7 @@ public class AnimalView : MonoBehaviour
     public GameObject duringAudioImage;
     public VideoPlayer videoPlayer;
     public AudioSource audioPlayer;
+    public Text statusMesage;
 
     private AnimalConfig activeAnimal;
 
@@ -65,21 +66,24 @@ public class AnimalView : MonoBehaviour
 
     private void PlayVideo()
     {
-        UnityEngine.Debug.Log("Loading " + activeAnimal.ResourceName + " clip");
+        statusMesage.text = "Loading " + activeAnimal.ResourceName + " clip";
         VideoClip clipToPlay = Resources.Load<VideoClip>("Videos/" + activeAnimal.ResourceName) as VideoClip;
         if (clipToPlay != null)
         {
             UnityEngine.Debug.Log("Playing " + activeAnimal.ResourceName + " clip");
+            statusMesage.text = "Playing " + activeAnimal.ResourceName + " clip";
             videoScreen.SetActive(true);
             videoPlayer.clip = clipToPlay;
             videoPlayer.loopPointReached += OnVideoDone;
             videoPlayer.Play();
+            statusMesage.text = "Currently playing " + activeAnimal.ResourceName + " clip";
         }
     }
 
     private void OnVideoDone(UnityEngine.Video.VideoPlayer vp)
     {
         UnityEngine.Debug.Log(activeAnimal.ResourceName + " clip done playing");
+        statusMesage.text = activeAnimal.ResourceName + " clip done playing";
         // Remove the video and start the sound playing
         this.DismissVideo();
         this.PlayAudio();

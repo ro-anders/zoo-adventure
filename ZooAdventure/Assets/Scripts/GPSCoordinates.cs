@@ -8,6 +8,9 @@ public class GPSCoordinates : MonoBehaviour
 
     public Text coordinatesText;
     public Text messageText;
+    private bool gettingGpsData = false;
+    private float firstAccuracy = -1;
+    private double lastTimestamp = -1;
 
     IEnumerator Start()
     {
@@ -20,9 +23,9 @@ public class GPSCoordinates : MonoBehaviour
         }
 
         // Start service before querying location
-        UnityEngine.Debug.Log("Starting location service");
+        messageText.text = ("Starting location service");
         Input.location.Start();
-        UnityEngine.Debug.Log("Location service started");
+        messageText.text = ("Location service started");
 
         // Wait until service initializes
         int maxWait = 20;
@@ -47,17 +50,29 @@ public class GPSCoordinates : MonoBehaviour
         }
         else
         {
-            // Access granted and location value could be retrieved
-            coordinatesText.text = "" + Input.location.lastData.latitude + " " + Input.location.lastData.longitude + " " + Input.location.lastData.altitude + " " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp;
+            gettingGpsData = true;
+            messageText.text = "Location received";
         }
 
         // Stop service if there is no need to query location updates continuously
-        Input.location.Stop();
+        //Input.location.Stop();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (gettingGpsData && (Input.location.lastData.timestamp > lastTimestamp))
+        {
+            // Access granted and location value could be retrieved
+            if (firstAccuracy < 0)
+            {
+                firstAccuracy = Input.location.lastData.horizontalAccuracy;
+            }
+            coordinatesText.text = "GPS=" + Input.location.lastData.latitude + "N " + Input.location.lastData.longitude + "W, " +
+                "Alt=" + Input.location.lastData.altitude +
+                "\nAccuracy=" + Input.location.lastData.horizontalAccuracy + " improved by " + (firstAccuracy - Input.location.lastData.horizontalAccuracy) +
+                "\nTime=" + Input.location.lastData.timestamp;
+            lastTimestamp = Input.location.lastData.timestamp;
+        }
     }
 }
