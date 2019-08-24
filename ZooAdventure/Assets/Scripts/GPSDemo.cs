@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GPSCoordinates : MonoBehaviour
+public class GPSDemo : MonoBehaviour
 {
 
     public Text coordinatesText;

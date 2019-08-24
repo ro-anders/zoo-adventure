@@ -30,7 +30,8 @@ public class AnimalView : MonoBehaviour
         foundPanel.SetActive(false);
         notfoundPanel.SetActive(false);
         // TODO: Setup GPS to look for coordinates
-        StartCoroutine(MockGps(animal));
+        GPSFinder finder = new GPSFinder();
+        finder.CheckInRegions(animal.Regions, OnGpsFinderReturned);
     }
 
     public void OnCloseClicked()
@@ -42,18 +43,11 @@ public class AnimalView : MonoBehaviour
         animalChooser.OnAnimalViewClosed();
     }
 
-    private bool mockSuccess = false;
-    private IEnumerator MockGps(AnimalConfig animal)
-    {
-        yield return new WaitForSeconds(3f);
-        mockSuccess = !mockSuccess;
-        OnGpsFinderReturned(animal, mockSuccess);
-    }
-
-    private void OnGpsFinderReturned(AnimalConfig animal, bool success)
+    private void OnGpsFinderReturned(bool success, bool error)
     {
         // If not found, show the not found page
         // If found, start the video playing
+        // TODO: Handle an error
         UnityEngine.Debug.Log("Animal search was " + (success ? "succesful" : "a failure"));
         foundPanel.SetActive(success);
         notfoundPanel.SetActive(!success);
