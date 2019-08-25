@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,8 +31,7 @@ public class AnimalView : MonoBehaviour
         foundPanel.SetActive(false);
         notfoundPanel.SetActive(false);
         // TODO: Setup GPS to look for coordinates
-        GPSFinder finder = new GPSFinder();
-        finder.CheckInRegions(animal.Regions, OnGpsFinderReturned);
+        CheckInRegions(animal.Regions, OnGpsFinderReturned);
     }
 
     public void OnCloseClicked()
@@ -115,5 +115,123 @@ public class AnimalView : MonoBehaviour
     {
         duringAudioImage.SetActive(false);
     }
+
+
+    // GPS STUFF ////////////////////////////////////////
+
+    private bool lastMockValue = false;
+
+    public void CheckInRegions(Region[] regions, Action<bool, bool> callback)
+    {
+        // TODO: Determine if GPS is turned on with something like this
+        //if (!Input.location.isEnabledByUser)
+        StartCoroutine(DoCheckInRegions(regions, callback));
+    }
+
+    private IEnumerator DoCheckInRegions(Region[] regions, Action<bool, bool> callback)
+    {
+#if UNITY_STANDALONE || UNITY_WEBPLAYER
+        yield return new WaitForSeconds(2f);
+        lastMockValue = !lastMockValue;
+        callback(true, lastMockValue);
+        yield break;
+#else
+        // TODO: This should be checked elsewhere where we can give a better
+        // message to the user
+        bool ok = Input.location.isEnabledByUser;
+
+        if (ok)
+        {
+            Input.location.Start(5);
+            int maxWait = 10;
+            while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
+            {
+                yield return new WaitForSeconds(1);
+                maxWait--;
+            }
+            ok = maxWait > 0;
+        }
+
+        float DESIRED_ACCURACY = 5;
+        float UNACCEPTABLE_ACCURACY = 50;
+        float bestAccuracy = UNACCEPTABLE_ACCURACY;
+        bool successAtBestAccuracy = false;
+        if (ok)
+        {
+            float MAX_WAIT_SECONDS = 5;
+            float timeToWait = MAX_WAIT_SECONDS;
+            double lastReading = 0;
+            while ((timeToWait > 0) && (bestAccuracy > DESIRED_ACCURACY))
+            {
+                if (timeToWait < MAX_WAIT_SECONDS)
+                {
+                    yield return new WaitForSeconds(1);
+                }
+                if (Input.location.lastData.timestamp > lastReading)
+                {
+                    lastReading = Input.location.lastData.timestamp;
+                    if (Input.location.lastData.horizontalAccuracy < bestAccuracy)
+                    {
+                        bestAccuracy = Input.location.lastData.horizontalAccuracy;
+                        successAtBestAccuracy = checkCoordsInRegions(
+                            Input.location.lastData.latitude,
+                            Input.location.lastData.longitude,
+                            Input.location.lastData.horizontalAccuracy,
+                            regions);
+                    }
+
+                }
+                timeToWait -= 1;
+            }
+        }
+
+        ok = (bestAccuracy <= UNACCEPTABLE_ACCURACY);
+
+        Input.location.Stop();
+
+        callback(ok && successAtBestAccuracy, !ok);
+        yield break;
+#endif
+    }
+
+    private bool checkCoordsInRegions(float latitude, float longitude, float accuracy, Region[] regions)
+    {
+        double meters_per_degree_lat = 111014.94; // This approximation most accurate at Wash DC latitude
+        double meters_per_degree_long = 111467.13 * Math.Cos(latitude * Mathf.Deg2Rad);  // This approximation most accurate at Wash DC latitude
+        double latAccuracy = accuracy / meters_per_degree_lat;
+        double longAccuracy = accuracy / meters_per_degree_long;
+        foreach (Region region in regions)
+        {
+            // TODO: Take accuracy into account
+            if ((latitude <= region.north + latAccuracy) && (latitude  >= region.south - latAccuracy) &&
+                (longitude <= region.east + longAccuracy) && (longitude >= region.west - longAccuracy))
+            {
+                statusMesage.text = latitude + "N " + longitude + "W is IN region with accuracy " + accuracy;
+                return true;
+            } else
+            {
+                statusMesage.text = "";
+                if (latitude > region.north)
+                {
+                    statusMesage.text = latitude + "N " + " is NORTH of " + region.north + "N with accuracy " + accuracy;
+                }
+                if (latitude < region.south)
+                {
+                    statusMesage.text = latitude + "N " + " is SOUTH of " + region.south + "N with accuracy " + accuracy;
+                }
+                if (longitude > region.east)
+                {
+                    statusMesage.text = longitude + "W " + " is EAST of " + region.east + "W with accuracy " + accuracy;
+                }
+                if (longitude < region.west)
+                {
+                    statusMesage.text = longitude + "W " + " is WEST of " + region.east + "W with accuracy " + accuracy;
+                }
+            }
+        }
+        return false;
+    }
+
+
 
 }

@@ -9,6 +9,17 @@ public class ZooAdventure : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AnimalConfig[] testAnimals =
+        {
+            new AnimalConfig(
+                "Sumatran Tiger", "tiger",
+                new Region[]{new Region(38.973269f, -76.999597f, 38.972892f, -76.999382f) }
+            ),
+            new AnimalConfig(
+                "Beaver", "beaver",
+                new Region[]{new Region(38.973392f, -77.000546f, 38.973108f, -77.000170f) }
+            )
+        };
         AnimalConfig[] animals = {
             new AnimalConfig(
                 "Sumatran Tiger", "tiger",
@@ -30,7 +41,7 @@ public class ZooAdventure : MonoBehaviour
             new AnimalConfig("Indian Elephant", "", new Region[]{}),
             new AnimalConfig("Serval", "", new Region[]{})
         };
-        animalChooser.LoadConfig(animals);
+        animalChooser.LoadConfig(testAnimals);
     }
 
 }

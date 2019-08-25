@@ -7,7 +7,7 @@ public class Region
     public readonly float east;
     public readonly float west;
 
-    public Region(float inNorth, float inSouth, float inWest, float inEast)
+    public Region(float inNorth, float inWest, float inSouth, float inEast)
     {
         north = inNorth;
         south = inSouth;
