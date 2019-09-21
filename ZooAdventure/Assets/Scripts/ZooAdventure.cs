@@ -18,6 +18,10 @@ public class ZooAdventure : MonoBehaviour
             new AnimalConfig(
                 "Beaver", "beaver",
                 new Region[]{new Region(38.973392f, -77.000546f, 38.973108f, -77.000170f) }
+            ),
+            new AnimalConfig(
+                "Sloth Bear", "slothbear",
+                new Region[]{new Region(38.973269f, -76.999597f, 38.972892f, -76.999382f) }
             )
         };
         AnimalConfig[] animals = {
