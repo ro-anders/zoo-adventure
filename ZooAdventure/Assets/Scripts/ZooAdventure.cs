@@ -9,43 +9,33 @@ public class ZooAdventure : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AnimalConfig[] testAnimals =
+        AnimalConfig[] animals =
         {
-            new AnimalConfig(
-                "Sumatran Tiger", "tiger",
-                new Region[]{new Region(38.973269f, -76.999597f, 38.972892f, -76.999382f) }
+             new AnimalConfig(
+                "Sloth Bear", "slothbear",
+                new Region[]{ new Region(38.929753f, -77.053509f, 38.930164f, -77.054554f), // Zoo
+                              new Region(38.973269f, -76.999597f, 38.972892f, -76.999382f) } // Home
             ),
             new AnimalConfig(
                 "Beaver", "beaver",
-                new Region[]{new Region(38.973392f, -77.000546f, 38.973108f, -77.000170f) }
+                new Region[]{new Region(38.973392f, -77.000546f, 38.973108f, -77.000170f) } // Home
             ),
             new AnimalConfig(
-                "Sloth Bear", "slothbear",
-                new Region[]{new Region(38.973269f, -76.999597f, 38.972892f, -76.999382f) }
+                "Otter", "otter",
+                new Region[]{ new Region(38.930263f, -77.053329f, 38.930545f, -77.053567f), // Zoo
+                    new Region(38.973269f, -76.999597f, 38.972892f, -76.999382f) } // Home
+                
             )
         };
-        AnimalConfig[] animals = {
-            new AnimalConfig(
-                "Sumatran Tiger", "tiger",
-                new Region[]{new Region(-100, 50, 0.4f, 0.5f)}
-            ),
-            new AnimalConfig(
-                "Beaver", "beaver",
-                new Region[]{new Region(-100, 50, 0.4f, 0.5f)}
-            ),
-            new AnimalConfig(
-                "Sloth Bear", "slothbear",
-                 new Region[]{new Region(-100, 50, 0.4f, 0.5f)}
-            ),
-            new AnimalConfig(
-                "American Bison", "bison",
-                new Region[]{new Region(-100, 50, 0.4f, 0.5f)}
-            ),
-            new AnimalConfig("Bald Eagle", "", new Region[]{}),
-            new AnimalConfig("Indian Elephant", "", new Region[]{}),
-            new AnimalConfig("Serval", "", new Region[]{})
-        };
-        animalChooser.LoadConfig(testAnimals);
+        // Add the tiger as a sample animal when we're developing
+        if (Application.isEditor)
+        {
+            var animalList = new List<AnimalConfig>(animals);
+            animalList.Insert(0, new AnimalConfig("Tiger", "tiger", new Region[] { }));
+            animals = animalList.ToArray();
+
+        }
+        animalChooser.LoadConfig(animals);
     }
 
 }
