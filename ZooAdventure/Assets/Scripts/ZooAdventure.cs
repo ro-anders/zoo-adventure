@@ -25,6 +25,10 @@ public class ZooAdventure : MonoBehaviour
                 new Region[]{new Region(38.973392f, -77.000546f, 38.973108f, -77.000170f) } // Home
             ),
             new AnimalConfig(
+                "Bison", "bison",
+                new Region[]{new Region(38.931801f, -77.052778f, 38.931210f, -77.051840f) } // Zoo
+            ),
+            new AnimalConfig(
                 "Otter", "otter",
                     new Region[]{ new Region(38.930263f, -77.053329f, 38.930545f, -77.053567f), // Zoo
                     new Region(38.973269f, -76.999597f, 38.972892f, -76.999382f) } // Home
