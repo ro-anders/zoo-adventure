@@ -59,24 +59,25 @@ public class AnimalView : MonoBehaviour
 
     private void PlayVideo()
     {
-        statusMesage.text = "Loading " + activeAnimal.ResourceName + " clip";
+        UnityEngine.Debug.Log("Loading " + activeAnimal.ResourceName + " clip");
         VideoClip clipToPlay = Resources.Load<VideoClip>("Videos/" + activeAnimal.ResourceName) as VideoClip;
         if (clipToPlay != null)
         {
-            UnityEngine.Debug.Log("Playing " + activeAnimal.ResourceName + " clip");
-            statusMesage.text = "Playing " + activeAnimal.ResourceName + " clip";
             videoScreen.SetActive(true);
             videoPlayer.clip = clipToPlay;
             videoPlayer.loopPointReached += OnVideoDone;
             videoPlayer.Play();
-            statusMesage.text = "Currently playing " + activeAnimal.ResourceName + " clip";
+            UnityEngine.Debug.Log("Playing " + activeAnimal.ResourceName + " clip");
+        }
+        else
+        {
+            UnityEngine.Debug.Log("No " + activeAnimal.ResourceName + " clip to play.");
         }
     }
 
     private void OnVideoDone(UnityEngine.Video.VideoPlayer vp)
     {
         UnityEngine.Debug.Log(activeAnimal.ResourceName + " clip done playing");
-        statusMesage.text = activeAnimal.ResourceName + " clip done playing";
         // Remove the video and start the sound playing
         this.DismissVideo();
         this.PlayAudio();
@@ -206,7 +207,6 @@ public class AnimalView : MonoBehaviour
         double longAccuracy = accuracy / meters_per_degree_long;
         foreach (Region region in regions)
         {
-            // TODO: Take accuracy into account
             if ((latitude <= region.north + latAccuracy) && (latitude  >= region.south - latAccuracy) &&
                 (longitude <= region.east + longAccuracy) && (longitude >= region.west - longAccuracy))
             {
