@@ -22,7 +22,8 @@ public class ZooAdventure : MonoBehaviour
             ),
             new AnimalConfig(
                 "Beaver", "beaver",
-                new Region[]{new Region(38.973392f, -77.000546f, 38.973108f, -77.000170f) } // Home
+                new Region[]{new Region(38.930258f, -77.049920f, 38.929869f, -77.049260f), // Zoo
+                        new Region(38.973392f, -77.000546f, 38.973108f, -77.000170f) } // Home
             ),
             new AnimalConfig(
                 "Bison", "bison",
